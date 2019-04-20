@@ -1,0 +1,31 @@
+{
+  "name": "cocktailmachine",
+  "version": "0.0.1",
+  "description": "An HandBrake wrapper for distributed encoding",
+  "main": "master.js",
+  "scripts": {
+    "test": "node master.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DontBreakAlex/CocktailMachine.git"
+  },
+  "keywords": [
+    "Distributed",
+    "Handbrake",
+    "Encoder"
+  ],
+  "author": "Alexandre Seo",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/DontBreakAlex/CocktailMachine/issues"
+  },
+  "homepage": "https://github.com/DontBreakAlex/CocktailMachine#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "recursive-readdir": "^2.2.2",
+    "uuid": "^3.3.2"
+  }
+}
