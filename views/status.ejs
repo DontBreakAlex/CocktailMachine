@@ -1,0 +1,18 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <table>
+            <thead><th scope="row">#</th><th scope="row">File</th><th scope="row">Status</th></thead>
+            <tbody>
+			<% for (i=0, lne=table.length; i<lne; ++i) {%>
+				<tr>
+					<th scope="row"><%= i+1 %></th>
+					<td><%= table[i][0] %></td>
+					<td><%= table[i][1] %></td>
+				</tr>
+			<%}%>
+		</tbody>
+        </table>
+    </body>
+</html>

@@ -15,6 +15,8 @@ recursive(path, ["!*.{mp4,mkv,avi,mov}"]).catch(err => console.log(err)).then(da
 });
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.set('view engine', 'ejs');
 
 app.use('/', require('./modules/api'));
+app.use('/mgr', require('./modules/mgr'))
 app.listen(port, () => {console.log(`Listening on port ${port}`)});
