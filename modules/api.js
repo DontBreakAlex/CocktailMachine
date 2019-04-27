@@ -32,4 +32,20 @@ router.put('/job', (req, res) => { //Again, if two workers validate jobs at the 
     res.status(500).send('Invalid job')
 })
 
+router.get('/jobs', (req, res) => {res.send(req.app.get('jobs'))})
+
+router.put('/settings', (req, res) => {
+    req.app.set(req.body.setting, req.body.value)
+    res.status(200).send()
+})
+
+router.get('/settings', (req, res) => {
+    res.send({
+        path: req.app.get('path'),
+        outputpath: req.app.get('outputpath'),
+        execpath: req.app.get('execpath'),
+        execoptions: req.app.get('execoptions'),
+        coresperthread: req.app.get('coresperthread')
+    })
+})
 module.exports = router

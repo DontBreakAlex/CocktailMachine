@@ -1,19 +1,16 @@
 const axios = require('axios');
 const exec = require('child_process').exec;
-const fs = require('fs')
-const outputpath = '/home/alexandre/cocktailmachineoutput'
-const execpath = '/home/alexandre/Vidéos'
-const execoptions = '-e x265 -q 26 -E mp3 -B 96'
-const threads = 2
+const fs = require('fs');
+const os = require('os');
 
-async function Work(num) {
+async function Work(num, execoptions, execpath, outputpath) {
     let error = ''
     while (error == '') {
         let job = await axios({ // Ask the master for a job
             url: 'http://127.0.0.1:3000/job',
             method: 'GET',
         }).catch(err => error = err)
-        if (job.data == undefined) return 'done'; // If no more jobs are available, stop the worker
+        if (job.data == undefined) {console.log(`Thread ${i} exiting: no more jobs`); return 'done';} // If no more jobs are available, stop the worker
         await new Promise(async (resolve, reject) => {
             let index  = job.data[0].lastIndexOf('/'); // Check the file is in a directory, and if yes, create it
             if (index !== 0) {
@@ -38,4 +35,9 @@ async function Work(num) {
     }
 }
 
-for (i=0; i<threads; ++i) {Work(i); console.log(`Starting thread ${i}`);} // Start workers
+axios({ // Get settings from the master
+    url: 'http://127.0.0.1:3000/settings',
+    method: 'GET',
+}).then(data => {
+    for (i=0; i<os.cpus().length/data.data.coresperthread; ++i) {Work(i, data.data.execoptions, data.data.execpath, data.data.outputpath); console.log(`Starting thread ${i}`);} // Start workers
+})

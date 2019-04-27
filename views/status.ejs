@@ -1,18 +1,52 @@
 <html>
-    <head>
-    </head>
-    <body>
-        <table>
-            <thead><th scope="row">#</th><th scope="row">File</th><th scope="row">Status</th></thead>
-            <tbody>
-			<% for (i=0, lne=table.length; i<lne; ++i) {%>
-				<tr>
-					<th scope="row"><%= i+1 %></th>
-					<td><%= table[i][0] %></td>
-					<td><%= table[i][1] %></td>
-				</tr>
-			<%}%>
-		</tbody>
-        </table>
-    </body>
-</html>
+<head>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script>
+        $(main) // Doc ready
+        function main() {
+            $.ajax({ // Get the current settings
+                url: '/settings',
+                method: 'GET',
+                datatype: 'JSON'
+            })
+            .then(data => {
+                $('div.build').empty()
+                // Display settings and buttons
+                $('div.build').append('<h1 class="card-title">Settings</h1>')
+                $('div.build').append(`<div class="row justify-content-md-left m-2 align-items-center"><div class="col-md-auto px-2"><a>Where the files to transcode are on the server:</a></div><div class ="col-md-auto p-0 pr-1" id="path"><a>${data.path}</a></div><div class="col-md-auto p-0"><button class="btn btn-secondary btn-sm px-1 py-0" type="button" id="path">Edit</button></div></div>`)
+                $('div.build').append(`<div class="row justify-content-md-left m-2 align-items-center"><div class="col-md-auto px-2"><a>Where to place the transcoded files on the workers:</a></div><div class ="col-md-auto p-0 pr-1" id="outputpath"><a>${data.outputpath}</a></div><div class="col-md-auto p-0"><button class="btn btn-secondary btn-sm px-1 py-0" type="button" id="outputpath">Edit</button></div></div>`)
+                $('div.build').append(`<div class="row justify-content-md-left m-2 align-items-center"><div class="col-md-auto px-2"><a>Where the files to transcode are on the worker:</a></div><div class ="col-md-auto p-0 pr-1" id="execpath"><a>${data.execpath}</a></div><div class="col-md-auto p-0"><button class="btn btn-secondary btn-sm px-1 py-0" type="button" id="execpath">Edit</button></div></div>`)
+                $('div.build').append(`<div class="row justify-content-md-left m-2 align-items-center"><div class="col-md-auto px-2"><a>HandBrake parameters:</a></div><div class ="col-md-auto p-0 pr-1" id="execoptions"><a>${data.execoptions}</a></div><div class="col-md-auto p-0"><button class="btn btn-secondary btn-sm px-1 py-0" type="button" id="execoptions">Edit</button></div></div>`)
+                $('div.build').append(`<div class="row justify-content-md-left m-2 align-items-center"><div class="col-md-auto px-2"><a>How many cores should a worker have:</a></div><div class ="col-md-auto p-0 pr-1" id="coresperthread"><a>${data.coresperthread}</a></div><div class="col-md-auto p-0"><button class="btn btn-secondary btn-sm px-1 py-0" type="button" id="coresperthread">Edit</button></div></div>`)
+                $('div.build').append('<h1 class="card-title">Jobs</h1>').append('<button class="btn btn-primary mx-2">Show jobs</button><button class="btn btn-primary mx-2">Acquire jobs</button>')
+                // Configure the buttons
+                for (elem of ['path', 'outputpath', 'execpath', 'execoptions', 'coresperthread']) config(elem)
+                function config(setting) {
+                    $(`button#${setting}`).click(() => {
+                        console.log(setting)
+                        $(`div#${setting}`).empty().append(`<input type="text" id="${setting}">`)
+                        $(`button#${setting}`).off('click').removeClass('btn-secondary').addClass('btn-warning').click(() => {
+                            $.ajax({
+                                url: '/settings',
+                                method: 'PUT',
+                                data: {setting: setting, value: $(`input#${setting}`).val()}
+                            })
+                            .then(main) // Probably not the best way to do it, but at least settings are kept up to date
+                        }) 
+                    })
+                }
+            })
+        }
+    </script>
+</head>
+<body style="background-color: cornflowerblue">
+    <div class="container">
+        <div class="card border-0 shadow my-5">
+            <div class="card-body p-4 text-center">
+                <div class="build"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>                
