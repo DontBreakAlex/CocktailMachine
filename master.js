@@ -29,7 +29,6 @@ app.set('view engine', 'ejs');
 
 
 app.use('/', require('./modules/api'));
-app.use('/mgr', require('./modules/mgr'))
 app.listen(port, () => {console.log(`Listening on port ${port}`)});
 
 getTable();

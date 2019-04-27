@@ -33,6 +33,7 @@ router.put('/job', (req, res) => { //Again, if two workers validate jobs at the 
 })
 
 router.get('/jobs', (req, res) => {res.send(req.app.get('jobs'))})
+router.get('/', (req, res) => {res.render('mgr')})
 
 router.put('/settings', (req, res) => {
     req.app.set(req.body.setting, req.body.value)
