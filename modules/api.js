@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const uuidv4 = require('uuid/v4');
+const fs = require('fs');
 
 router.get('/job', (req, res) => { //This may break if 2 workers ask for a job at the same time
     let jobs = req.app.get('jobs'), uuid = uuidv4();
@@ -37,6 +38,13 @@ router.get('/', (req, res) => {res.render('mgr')})
 
 router.put('/settings', (req, res) => {
     req.app.set(req.body.setting, req.body.value)
+    fs.writeFile('./settings.json', JSON.stringify({
+        path: req.app.get('path'),
+        outputpath: req.app.get('outputpath'),
+        execpath: req.app.get('execpath'),
+        execoptions: req.app.get('execoptions'),
+        coresperthread: req.app.get('coresperthread')
+    }), () => {})
     res.status(200).send()
 })
 
@@ -49,4 +57,5 @@ router.get('/settings', (req, res) => {
         coresperthread: req.app.get('coresperthread')
     })
 })
+
 module.exports = router

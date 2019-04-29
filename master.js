@@ -4,11 +4,24 @@ const app = express();
 const port = 3000;
 const bodyParser = require('body-parser');
 const fs = require('fs');
-app.set('path', '/home/alexandre/Vidéos');
-app.set('outputpath', '/home/alexandre/cocktailmachineoutput');
-app.set('execpath', '/home/alexandre/Vidéos');
-app.set('execoptions', '-e x265 -q 26 -E mp3 -B 96');
-app.set('coresperthread', 4);
+
+fs.readFile('./settings.json', (err, data) => {
+    if (err) {console.log(err);} else {
+        let settings = JSON.parse(data)
+        app.set('path', settings.path);
+        app.set('outputpath', settings.outputpath);
+        app.set('execpath', settings.execpath);
+        app.set('execoptions', settings.execoptions);
+        app.set('coresperthread', settings.coresperthread);
+    } 
+});
+ 
+fs.readFile('./table.json', (err, data) => {
+    if (err) {console.log(err);} else {
+        let jobs = JSON.parse(data)
+        app.set('jobs', jobs);
+    } 
+});
 
 function getTable() {
     recursive(app.get('path'), ["!*.{mp4,mkv,avi,mov}"]).catch(err => console.log(err)).then(data => {
@@ -30,5 +43,3 @@ app.set('view engine', 'ejs');
 
 app.use('/', require('./modules/api'));
 app.listen(port, () => {console.log(`Listening on port ${port}`)});
-
-getTable();
