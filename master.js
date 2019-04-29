@@ -1,7 +1,7 @@
 const recursive = require("recursive-readdir");
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 4545;
 const bodyParser = require('body-parser');
 const fs = require('fs');
 
@@ -40,6 +40,6 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
-
+app.post('/findjobs', (req, res) => {getTable(); res.status(200).send('ok')});
 app.use('/', require('./modules/api'));
 app.listen(port, () => {console.log(`Listening on port ${port}`)});

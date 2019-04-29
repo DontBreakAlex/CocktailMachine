@@ -19,7 +19,7 @@
                 $('div.build').append(`<div class="row justify-content-md-left m-2 align-items-center"><div class="col-md-auto px-2"><a>Where the files to transcode are on the worker:</a></div><div class ="col-md-auto p-0 pr-1" id="execpath"><a>${data.execpath}</a></div><div class="col-md-auto p-0"><button class="btn btn-secondary btn-sm px-1 py-0" type="button" id="execpath">Edit</button></div></div>`)
                 $('div.build').append(`<div class="row justify-content-md-left m-2 align-items-center"><div class="col-md-auto px-2"><a>HandBrake parameters:</a></div><div class ="col-md-auto p-0 pr-1" id="execoptions"><a>${data.execoptions}</a></div><div class="col-md-auto p-0"><button class="btn btn-secondary btn-sm px-1 py-0" type="button" id="execoptions">Edit</button></div></div>`)
                 $('div.build').append(`<div class="row justify-content-md-left m-2 align-items-center"><div class="col-md-auto px-2"><a>How many cores should a worker have:</a></div><div class ="col-md-auto p-0 pr-1" id="coresperthread"><a>${data.coresperthread}</a></div><div class="col-md-auto p-0"><button class="btn btn-secondary btn-sm px-1 py-0" type="button" id="coresperthread">Edit</button></div></div>`)
-                $('div.build').append('<h1 class="card-title">Jobs</h1>').append('<div id="Jobs" class="m-3"><button class="btn btn-primary mx-2" id="show">Show jobs</button><button class="btn btn-primary mx-2">Acquire jobs</button></div>')
+                $('div.build').append('<h1 class="card-title">Jobs</h1>').append('<div id="Jobs" class="m-3"><button class="btn btn-primary mx-2" id="show">Show jobs</button><button id="findjobs" class="btn btn-primary mx-2">Acquire jobs</button></div>')
                 // Configure the buttons
                 for (elem of ['path', 'outputpath', 'execpath', 'execoptions', 'coresperthread']) config(elem)
                 function config(setting) {
@@ -46,6 +46,12 @@
                         for (i=0, len=data.length; i<len; ++i) {
                             $('tbody').append(`<tr><th scope="row">${i}</th><td>${data[i][0]}</td><td>${data[i][1]}</td></tr>`)
                         }
+                    })
+                })
+                $('button#findjobs').click(() => {
+                    $.ajax({
+                        url: '/findjobs',
+                        method: 'POST'
                     })
                 })
             })
