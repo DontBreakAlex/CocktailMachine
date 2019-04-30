@@ -24,7 +24,7 @@ async function Work(num, execoptions, execpath, outputpath) {
             }
             let out = job.data[0].substring(0, job.data[0].lastIndexOf('.'))
             console.log(out)
-            exec(`HandBrakeCLI ${execoptions} -i "${execpath + job.data[0]}" -o "${outputpath + out}.mp4"`, (stdout, stderr) => { // Start HandBrake
+            exec(`HandBrakeCLI ${execoptions} -i "${execpath + job.data[0]}" -o "${outputpath + out}.mp4"`, {maxBuffer: 1024 * 1024 * 10}, (stdout, stderr) => { // Start HandBrake
                 console.log(`Thread ${num} has finished processing ${job.data[0]}`)
                 if (stderr !== '' && stderr !== null) {console.log(`Stderr: ${stderr.trim()}`);} // Handle HandBrake output
                 if (stdout !== '' && stdout !== null) {console.log(`Stdout: ${stdout}`);}
