@@ -10,7 +10,6 @@ router.get('/job', (req, res) => { //This may break if 2 workers ask for a job a
             jobs[i][1] = 'distributed';
             jobs[i][2] = uuid;
             req.app.set('jobs', jobs);
-            console.log(jobs)
             res.send([jobs[i][0], uuid]);
             return 1;
         }
@@ -24,8 +23,8 @@ router.put('/job', (req, res) => { //Again, if two workers validate jobs at the 
         if (jobs[i][2] == req.body.uuid) {
             jobs[i][1] = 'completed';
             req.app.set('jobs', jobs);
-            console.log(jobs)
             console.log(`${jobs[i][0]} has been transcoded`);
+            fs.writeFile('./table.json', JSON.stringify(jobs), 'utf8', () => {})
             res.status(200).send('ok');
             return 1;
         }

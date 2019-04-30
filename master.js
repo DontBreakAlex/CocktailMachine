@@ -29,7 +29,6 @@ function getTable() {
         for (let i=0, len=data.length; i<len; ++i) {
             table[i] = [data[i].substring(lenght), 'waiting'];
         }
-        console.log(table);
         app.set('jobs', table);
         fs.writeFile('./table.json', JSON.stringify(table), 'utf8', () => {})
     });
