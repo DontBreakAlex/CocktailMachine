@@ -22,7 +22,9 @@ async function Work(num, execoptions, execpath, outputpath) {
                     })
                 }).catch(err => console.warn(err));
             }
-            exec(`HandBrakeCLI ${execoptions} -i "${execpath + job.data[0]}" -o "${outputpath + job.data[0]}"`, (stdout, stderr) => { // Start HandBrake
+            let out = job.data[0].substring(0, job.data[0].lastIndexOf('.'))
+            console.log(out)
+            exec(`HandBrakeCLI ${execoptions} -i "${execpath + job.data[0]}" -o "${outputpath + out}.mp4"`, (stdout, stderr) => { // Start HandBrake
                 console.log(`Thread ${num} has finished processing ${job.data[0]}`)
                 if (stderr !== '' && stderr !== null) {console.log(`Stderr: ${stderr.trim()}`);} // Handle HandBrake output
                 if (stdout !== '' && stdout !== null) {console.log(`Stdout: ${stdout}`);}
