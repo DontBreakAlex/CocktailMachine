@@ -24,7 +24,7 @@ fs.readFile('./table.json', (err, data) => {
 });
 
 function getTable() {
-    recursive(app.get('path'), ["!*.{mp4,mkv,avi,mov}"]).catch(err => console.log(err)).then(data => {
+    recursive(app.get('path'), ["!*.{mp4,mkv,avi,mov,wmv}"]).catch(err => console.log(err)).then(data => {
         let lenght = app.get('path').length, table = [[],[]];
         for (let i=0, len=data.length; i<len; ++i) {
             table[i] = [data[i].substring(lenght), 'waiting'];

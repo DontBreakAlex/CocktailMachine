@@ -21,7 +21,7 @@ router.put('/job', (req, res) => { //Again, if two workers validate jobs at the 
     let jobs = req.app.get('jobs');
     for (let i=0, len=jobs.length; i<len; ++i) {
         if (jobs[i][2] == req.body.uuid) {
-            jobs[i][1] = 'completed';
+            jobs[i][1] = (req.body.status == 0) ? 'completed' : 'errored';
             req.app.set('jobs', jobs);
             console.log(`${jobs[i][0]} has been transcoded`);
             fs.writeFile('./table.json', JSON.stringify(jobs), 'utf8', () => {})

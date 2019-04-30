@@ -1,5 +1,5 @@
 const axios = require('axios');
-const exec = require('child_process').exec;
+const { spawn } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const ip = '127.0.0.1:4545'
@@ -11,7 +11,7 @@ async function Work(num, execoptions, execpath, outputpath) {
             url: `http://${ip}/job`,
             method: 'GET',
         }).catch(err => error = err)
-        if (job.data == undefined) {console.log(`Thread ${i} exiting: no more jobs`); return 'done';} // If no more jobs are available, stop the worker
+        if (job.data == undefined) {console.log(`Thread ${num} exiting: no more jobs`); return 'done';} // If no more jobs are available, stop the worker
         await new Promise(async (resolve, reject) => {
             let index  = job.data[0].lastIndexOf('/'); // Check the file is in a directory, and if yes, create it
             if (index !== 0) {
@@ -22,20 +22,29 @@ async function Work(num, execoptions, execpath, outputpath) {
                     })
                 }).catch(err => console.warn(err));
             }
-            let out = job.data[0].substring(0, job.data[0].lastIndexOf('.'))
-            console.log(out)
-            exec(`HandBrakeCLI ${execoptions} -i "${execpath + job.data[0]}" -o "${outputpath + out}.mp4"`, {maxBuffer: 1024 * 1024 * 10}, (stdout, stderr) => { // Start HandBrake
-                console.log(`Thread ${num} has finished processing ${job.data[0]}`)
-                if (stderr !== '' && stderr !== null) {console.log(`Stderr: ${stderr.trim()}`);} // Handle HandBrake output
-                if (stdout !== '' && stdout !== null) {console.log(`Stdout: ${stdout}`);}
-                axios({ // Tell the server that the job is finished
-                    url: `http://${ip}/job`,
-                    method: 'PUT',
-                    data: { uuid: job.data[1] }
-                }).catch(err => {error = err; reject(err)}).then(resolve());
-            });
+            let noext = job.data[0].substring(0, job.data[0].lastIndexOf('.'))
+            let arg = execoptions.split(' ')
+            arg.push('-i', execpath + job.data[0], '-o', outputpath + noext + '.mp4')
+            let HandBrake = spawn('HandBrakeCLI', arg) // Start HandBrake
+            Exit(HandBrake, num, job, resolve, reject) // Handle HandBrake exit
         }).catch(err => console.warn(err));
     }
+}
+
+function Exit(HandBrake, num, job, next, fail) { 
+    HandBrake.on('exit', (code) => {
+        if (code == 0) {
+            console.log(`Thread ${num} has finished processing ${job.data[0]}`)
+        } else {
+            console.warn(`Thread ${num} has failed processing ${job.data[0]}`)
+        }
+        axios({ // Tell the server that the job is finished
+            url: `http://${ip}/job`,
+            method: 'PUT',
+            data: { uuid: job.data[1], status: code }
+        }).catch(err => {error = err; fail(err)}).then(next());
+    })
+    /* HandBrake.stdout.on('data', data => console.log(`${num}: ${data.toString().substring(24)}`)) */ // Uncomment to display progress (not recommended)
 }
 
 axios({ // Get settings from the master
