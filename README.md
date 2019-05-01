@@ -2,13 +2,14 @@
 CocktailMachine is a HandBrake wrapper for distributed encoding. 
 ## Disclaimer
 CocktailMachine should only be used in a trusted network. Someone on your network can see what your are transcoding with wireshark, and could execute commands on the slaves with a MITM attack.
-## What CocktailMachine can and can't do
+## Description
 CocktailMachine is a wrapper for HandBrake. It is meant to transcode large libraries on a network drive (in my case, my plex library). It scans a folder recursively and transcodes it, reproducing the file structure. It **can't** transcode a single file using several computers.
 ## Requirements
 - Linux
 - NodeJS
 - HandBrakeCLI
 - A network drive mounted at the same location on all slaves
+
 The master scans provided location and distributes jobs to the slaves. One of the slaves can be the master.
 # Setup
  1. Install NodeJS and NPM
@@ -40,6 +41,7 @@ Then install node and HandBrake on the slave(s) :
     curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
     sudo apt-get install -y nodejs handbrake-cli
 If you are using ubuntu, you need to add handbrake ppa before installing it : `sudo add-apt-repository ppa:stebbins/handbrake-releases`
+
 Finaly copy the folder CocktailMachine to the slave(s)
 
 # Configuration
@@ -59,7 +61,7 @@ If you need help, refer to "Detailed explanation of settings"
 Connect to the master's web interface, and set the location of the folder your want to transcode (if not already done).
 Press the "acquire jobs" button, and press "show jobs" to check that jobs are detected.
 If you have trouble detecting jobs, refer to "Detailed explanation of settings".
-Yan can then run slave.js on the slave(s) : `node slave.js`
+You can then run slave.js on the slave(s) : `node slave.js`
 The slave will exit when all jobs are completed. 
 I recommend running it in the background using screen :
 
