@@ -54,4 +54,4 @@ axios({ // Get settings from the master
     method: 'GET',
 }).then(data => {
     for (i=0; i<os.cpus().length/data.data.coresperthread; ++i) {Work(i, data.data.execoptions, data.data.execpath, data.data.outputpath); console.log(`Starting thread ${i}`);} // Start workers
-});
+}).catch(() => console.error("Can't connect to master ! Check master ip !"));
